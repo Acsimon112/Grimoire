@@ -1,6 +1,6 @@
 # grimoire
 
-A new Flutter project.
+The be all end all notetaking app for your dungeons & dragons 5th edition gaming needs! 
 
 ## Getting Started
 
