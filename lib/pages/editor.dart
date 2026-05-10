@@ -19,23 +19,35 @@ class _EditorPageState extends State<EditorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Editor")),
+    
+    drawer: Drawer(
+      child:ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Text("Menu")
+          ),
+          ListTile(
+            title: Text("Home"),
+            onTap: (){
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage(title: "Grimoire"))
+                );
+            },
+          )
+        ],
+      )
+    ),
     body: Center(
       child: Column(
         mainAxisAlignment: .center,
         children: [
-          ElevatedButton(//nav to home
-                  style:ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green[400],
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Home"),
-                )
-        ]
-      ),
-    )
+          ]
+        ),
+      )
+      
     );
   }
 
