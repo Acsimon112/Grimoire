@@ -1,16 +1,15 @@
 # grimoire
 
-The be all end all notetaking app for your dungeons & dragons 5th edition gaming needs! 
+The be all end all notetaking app for your dungeons & dragons 5th edition gaming needs! Simple app using firestore to keep and load notes for dnd sessions, with a few side features to flesh it out.
 
-## Getting Started
+By Abraham Simon
+CSCI 567
+5/14/2026
 
-This project is a starting point for a Flutter application.
+## Resources:
 
-A few resources to get you started if this is your first Flutter project:
+Basic Structure:
+https://docs.flutter.dev/reference/learning-resources
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Random Numbers for dice rolling:
+https://dart.dev/libraries/dart-math

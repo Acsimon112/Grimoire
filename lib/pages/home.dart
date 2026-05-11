@@ -27,6 +27,10 @@ Future<void> addNote() async {
   });
 }
 
+Future<void> deleteNote(String id) async {
+  await FirebaseFirestore.instance.collection('notes').doc(id).delete();
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -37,18 +41,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
        
         title: Text(widget.title),
       ),
+       //sidebar for app
       drawer: Drawer(
         child:ListView(
           padding: EdgeInsets.zero,
@@ -67,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("Menu")
             ),
             ListTile(
-              title: Text("Editor"),
+              title: Text("Create New Note"),
               onTap: (){
                 Navigator.pop(context);
                 Navigator.push(
@@ -79,44 +72,79 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         )
       ),
-      body: Center(
-        
-        child: Column(
-          
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ElevatedButton(
-              onPressed: addNote,
-              child: const Text("Save"),
-            ),
-            ElevatedButton(//nav to form
-                  style:ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green[400],
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder:(context) => const EditorPage(),
-                      )
-                    );
-                  },
-                  child: Text("Open Editor"),
-                )
+      body: StreamBuilder(
+        //pull documents from firestore
+        stream: FirebaseFirestore.instance.collection('notes').orderBy('createdAt', descending: true).snapshots(), 
+        builder: (context, snapshot) {
+          //the funny loading circle
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator()
+            );
+          }
+          //data for our notes
+          final notes = snapshot.data!.docs;
 
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          if (notes.isEmpty) {
+            return const Center(
+              child: Text("No notes yet.")
+            );
+          }
+
+          return GridView.builder(
+            /* 
+                The main grid view of documents in the docs, handled by a grid view and stream builder which takes documents
+              from firestore and displays them in a grid for easy viewing. will be able to load and delete documents, 
+              as well as make new ones
+            */
+            padding: const EdgeInsets.all(12),
+            gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1,
+              ),
+            
+            itemCount: notes.length,
+            itemBuilder: (context, i){
+              //data is map <string, dynamic>
+              final data = notes[i].data();
+
+              return Card(
+                //individual entries appear as cards
+                elevation: 3,
+                child: Column(
+                  crossAxisAlignment: 
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data['title'] ??  'untitled',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      const SizedBox(height: 8),
+                      //preview text
+                      Expanded(
+                        child: Text(
+                          data['content'] ?? ' ',
+                          overflow: TextOverflow.fade,
+                          maxLines:4
+                        ),
+                      ),
+                      //delete button
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteNote(notes[i].id);
+                        })
+                    ]
+                )
+              );
+            },
+          );
+        }
       ),
       
     );

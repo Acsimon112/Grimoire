@@ -9,18 +9,43 @@ class EditorPage extends StatefulWidget{
   State<EditorPage> createState() => _EditorPageState();
 }
 
+Future<void> saveNote(TextEditingController title, TextEditingController content) async {
+  await FirebaseFirestore.instance.collection('notes').add({
+    'title': title.text,
+    'content': content.text,
+    'createdAt': Timestamp.now(),
+  });
+}
+
 class _EditorPageState extends State<EditorPage> {
   @override
   void initState(){
     super.initState();
   }
-
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+    
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Editor")),
-    
+      appBar: AppBar(
+        //---TITLE IN APP BAR BECAUSE ITS COOL---
+        title: TextField(
+          controller: titleController,
+          decoration: InputDecoration(
+            hintText: "Untitled",
+            border: InputBorder.none,
+          ),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        ),
+
     drawer: Drawer(
+      //---NAVIGATION SIDEBAR---
       child:ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -36,14 +61,33 @@ class _EditorPageState extends State<EditorPage> {
                   MaterialPageRoute(builder: (context) => const MyHomePage(title: "Grimoire"))
                 );
             },
-          )
+          ),
+          ListTile(
+            title: Text("Save"),
+            onTap: () {saveNote(titleController, noteController);}
+          ),
         ],
       )
     ),
-    body: Center(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
       child: Column(
-        mainAxisAlignment: .center,
         children: [
+            Expanded(
+              //---Note editor proper---
+              child:TextField(
+                controller: noteController,
+                expands: true,
+                maxLines: null,
+                textAlignVertical: TextAlignVertical.top,
+                decoration: InputDecoration(
+                  hintText: "Write your notes here..."
+                
+                  
+                ),
+              )
+                
+            )
           ]
         ),
       )
