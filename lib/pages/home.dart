@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grimoire/pages/editor.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'; //for flutter quill to work
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -10,6 +13,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Grimoire',
+      localizationsDelegates: const [
+        //flutter quill requires localizations, but I'm not bilingual so it's just English
+        FlutterQuillLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+      ],
       theme: ThemeData(
        
         colorScheme: .fromSeed(seedColor: Colors.green),
@@ -21,6 +34,17 @@ class MyApp extends StatelessWidget {
 
 Future<void> deleteNote(String id) async {
   await FirebaseFirestore.instance.collection('notes').doc(id).delete();
+}
+
+String _getPlainText (dynamic content) {
+  //converts json contents into plaintext for card previews, otherwise they just show ugly formatting code
+  try{
+    final doc = Document.fromJson(content);
+    return doc.toPlainText();
+  } catch(_) {
+    return ' ';
+  }
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -69,17 +93,19 @@ class _MyHomePageState extends State<MyHomePage> {
         stream: FirebaseFirestore.instance.collection('notes').orderBy('createdAt', descending: true).snapshots(), 
         builder: (context, snapshot) {
           //the funny loading circle
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator()
-            );
+            if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
-          //data for our notes
-          final notes = snapshot.data!.docs;
+
+          if (snapshot.hasError) {
+            return const Center(child: Text("Error loading notes"));
+          }
+
+          final notes = snapshot.data?.docs ?? [];
 
           if (notes.isEmpty) {
             return const Center(
-              child: Text("No notes yet.")
+              child: Text("No notes yet. Create one through the sidebar.")
             );
           }
 
@@ -120,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       //preview text
                       Expanded(
                         child: Text(
-                          data['content'] ?? ' ',
+                          _getPlainText(data['content']),
                           overflow: TextOverflow.fade,
                           maxLines:4
                         ),

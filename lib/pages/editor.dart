@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grimoire/pages/home.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class EditorPage extends StatefulWidget{
   final String? noteId;
@@ -19,15 +20,15 @@ class _EditorPageState extends State<EditorPage> {
     loadNote();
   }
   final TextEditingController titleController = TextEditingController();
-  final TextEditingController noteController = TextEditingController();
+  final QuillController noteController = QuillController.basic();
 
   
 
-  Future<void> saveNote(TextEditingController title, TextEditingController content) async {
+  Future<void> saveNote(TextEditingController title, QuillController content) async {
   //store data in a map, check if you can update first, then check if you need to save it as a new document
   final data = {
     'title': title.text,
-    'content': content.text,
+    'content': content.document.toDelta().toJson(),
     'updatedAt': Timestamp.now(),
   };
 
@@ -54,11 +55,16 @@ class _EditorPageState extends State<EditorPage> {
     final doc = await FirebaseFirestore.instance.collection('notes').doc(widget.noteId).get();
     final data = doc.data();
 
+    final document = Document.fromJson(data?['content']);
     if (data != null) {
       //load data
       titleController.text = data['title'];
-      noteController.text = data['content'];
+      setState(() {
+        noteController.document = document;
+      });
     }
+
+    
   }
   @override
   Widget build(BuildContext context) {
@@ -108,26 +114,23 @@ class _EditorPageState extends State<EditorPage> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+            QuillSimpleToolbar(controller: noteController, config: QuillSimpleToolbarConfig(),),
             Expanded(
               //---Note editor proper---
-              child:TextField(
-                controller: noteController,
-                expands: true,
-                maxLines: null,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: InputDecoration(
-                  hintText: "Write your notes here..."
-                
-                  
-                ),
-              )
-                
+              child: QuillEditor.basic(controller: noteController, config: const QuillEditorConfig()),
             )
           ]
         ),
       )
       
     );
+
+  }
+  @override
+    void dispose() {
+      titleController.dispose();
+      noteController.dispose();
+      super.dispose();
   }
 
 }
