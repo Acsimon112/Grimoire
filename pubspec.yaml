@@ -37,6 +37,9 @@ dependencies:
   cloud_firestore: ^5.0.0
   cupertino_icons: ^1.0.8
 
+  #flutter quill -> rich text editor package
+  flutter_quill: ^11.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

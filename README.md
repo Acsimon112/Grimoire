@@ -4,7 +4,7 @@ The be all end all notetaking app for your dungeons & dragons 5th edition gaming
 
 By Abraham Simon
 CSCI 567
-5/14/2026
+5/14/2026 
 
 ## Resources:
 
@@ -13,3 +13,6 @@ https://docs.flutter.dev/reference/learning-resources
 
 Random Numbers for dice rolling:
 https://dart.dev/libraries/dart-math
+
+Flutter Quill:
+https://pub.dev/packages/flutter_quill

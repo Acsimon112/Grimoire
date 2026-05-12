@@ -19,14 +19,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> addNote() async {
-  await FirebaseFirestore.instance.collection('notes').add({
-    'title': 'Test Note',
-    'content': "What's good nerd.",
-    'createdAt': Timestamp.now(),
-  });
-}
-
 Future<void> deleteNote(String id) async {
   await FirebaseFirestore.instance.collection('notes').doc(id).delete();
 }
@@ -133,12 +125,25 @@ class _MyHomePageState extends State<MyHomePage> {
                           maxLines:4
                         ),
                       ),
-                      //delete button
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          deleteNote(notes[i].id);
-                        })
+                      Row(
+                        children: [
+                          //delete button
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              deleteNote(notes[i].id);
+                            }),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => EditorPage(noteId: notes[i].id))
+                              );
+                            }
+                          ),
+                        ],)
+                      
                     ]
                 )
               );
