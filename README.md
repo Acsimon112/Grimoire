@@ -1,13 +1,13 @@
 # GRIMOIRE: THE DM'S RESOURCE
-Abraham Simon <br>
-CSCI 567 <br>
-5/14/2026 <br>
+*Abraham Simon* <br>
+*CSCI 567* <br>
+*5/14/2026* <br>
 
 The be all end all notetaking app for your dungeons & dragons 5th edition gaming needs!
 
 ## Features:
 ### 1. Create and Manage Notes!
-Create notes, edit them with a powerful markdown editor and make your plans look 
+Create notes, edit them with a powerful rich text editor and make your plans look 
 prettier than ever before. Using flutter quill, your documents may be formatted 
 to your hearts' content.
 ### 2. Share Your Notes!
