@@ -4,6 +4,7 @@ import 'package:grimoire/pages/editor.dart';
 import 'package:flutter_quill/flutter_quill.dart'; //rich text editor base
 import 'package:flutter_localizations/flutter_localizations.dart'; //for flutter quill to work
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grimoire/pages/roller.dart';
 import 'package:grimoire/pages/scanner.dart';
 
 
@@ -95,7 +96,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(builder: (context) => const ScanPage())
                 );
-
+              }),
+              ListTile(
+              title: Text("Roll Dice"),
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Roller())
+                );
               })
           ],
         )
