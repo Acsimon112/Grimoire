@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:grimoire/pages/home.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:grimoire/pages/editor.dart';
 
-
-class ScanPage extends StatefulWidget {
+class QrGen extends StatefulWidget {
   final String? noteId;
-  const ScanPage({super.key, this.noteId});
+  const QrGen({super.key, this.noteId});
   @override
-  State<ScanPage> createState() => _ScanPageState();
+  State<QrGen> createState() => _QrGenState();
 }
 
-class _ScanPageState extends State<ScanPage> {
+class _QrGenState extends State<QrGen> {
   @override
   void initState(){
     super.initState();
@@ -21,7 +19,7 @@ class _ScanPageState extends State<ScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan document')
+        title: Text('Share document')
       ),
       drawer: Drawer(
       //---NAVIGATION SIDEBAR---
@@ -44,15 +42,15 @@ class _ScanPageState extends State<ScanPage> {
         ]
       )
     ),
-      body: MobileScanner(
-            onDetect:(result) {
-                final id = result.barcodes.first.rawValue;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EditorPage(noteId: id))
-                );
-            },
+      body: Column(children: [
+        Center(
+          //build a QR code based on the 
+          child: QrImageView(
+            data: widget.noteId ?? ' ',
+            size: 250
           )
-        );
+        )
+      ],)
+    );
   }
 }

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grimoire/pages/home.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:grimoire/pages/qr_page.dart';
 
 class EditorPage extends StatefulWidget{
   final String? noteId;
@@ -30,6 +32,7 @@ class _EditorPageState extends State<EditorPage> {
     'title': title.text,
     'content': content.document.toDelta().toJson(),
     'updatedAt': Timestamp.now(),
+    'ownerID': FirebaseAuth.instance.currentUser!.uid
   };
 
   if (widget.noteId != null) {
@@ -59,8 +62,17 @@ class _EditorPageState extends State<EditorPage> {
     if (data != null) {
       //load data
       titleController.text = data['title'];
+      final user = FirebaseAuth.instance.currentUser!.uid;
+      final owner = data['ownerID'];
+
       setState(() {
         noteController.document = document;
+
+        if(user != owner){
+          //used for shared docs, should make it so users cannot edit shared documents.
+          //(it does not do that)
+          noteController.readOnly = true;
+        }
       });
     }
 
@@ -107,6 +119,16 @@ class _EditorPageState extends State<EditorPage> {
             title: Text("Save"),
             onTap: () {saveNote(titleController, noteController);}
           ),
+          ListTile(
+            title: Text("Share"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => QrGen(noteId: widget.noteId))
+                );
+            }
+            )
         ],
       )
     ),
@@ -114,6 +136,7 @@ class _EditorPageState extends State<EditorPage> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+            
             QuillSimpleToolbar(controller: noteController, config: QuillSimpleToolbarConfig(),),
             Expanded(
               //---Note editor proper---

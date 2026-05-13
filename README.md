@@ -16,3 +16,6 @@ https://dart.dev/libraries/dart-math
 
 Flutter Quill:
 https://pub.dev/packages/flutter_quill
+
+QR_Flutter:
+https://pub.dev/packages/qr_flutter

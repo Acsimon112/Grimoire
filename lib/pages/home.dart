@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grimoire/pages/editor.dart';
-import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/flutter_quill.dart'; //rich text editor base
 import 'package:flutter_localizations/flutter_localizations.dart'; //for flutter quill to work
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grimoire/pages/scanner.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
        
         colorScheme: .fromSeed(seedColor: Colors.green),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Grimoire: Home'),
     );
   }
 }
@@ -84,13 +86,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(builder: (context) => const EditorPage())
                 );
               },
-            )
+            ),
+            ListTile(
+              title: Text("Scan Code"),
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ScanPage())
+                );
+
+              })
           ],
         )
       ),
       body: StreamBuilder(
-        //pull documents from firestore
-        stream: FirebaseFirestore.instance.collection('notes').orderBy('createdAt', descending: true).snapshots(), 
+        //pull documents from firestore according to user ID
+        stream: FirebaseFirestore.instance.collection('notes')
+                .where('ownerID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .orderBy('createdAt', descending: true)
+                .snapshots(), 
         builder: (context, snapshot) {
           //the funny loading circle
             if (snapshot.connectionState == ConnectionState.waiting) {
