@@ -156,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //individual entries appear as cards
                 elevation: 3,
                 child: Column(
+                  
                   crossAxisAlignment: 
                     CrossAxisAlignment.start,
                     children: [

@@ -44,7 +44,7 @@ class _QrGenState extends State<QrGen> {
     ),
       body: Column(children: [
         Center(
-          //build a QR code based on the 
+          //build a QR code based on the doc id
           child: QrImageView(
             data: widget.noteId ?? ' ',
             size: 250

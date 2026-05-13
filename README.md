@@ -26,3 +26,4 @@ Grimoire comes built-in with a dice roller for easy rolling straight from your p
 | Flutter Quill documentation | https://pub.dev/packages/flutter_quill |
 | QR_Flutter documentation | https://pub.dev/packages/qr_flutter |
 | Mobile_Scanner documentation | https://pub.dev/packages/mobile_scanner |
+| For help on the streamBuilder | https://youtu.be/Mf_MDRx_cSI?si=EihGO5SLCv8hNXcY |
