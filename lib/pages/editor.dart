@@ -72,6 +72,7 @@ class _EditorPageState extends State<EditorPage> {
           //used for shared docs, should make it so users cannot edit shared documents.
           //(it does not do that)
           noteController.readOnly = true;
+          //will need some additional logic to make work, just unsure how.
         }
       });
     }

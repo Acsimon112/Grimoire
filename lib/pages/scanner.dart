@@ -16,6 +16,8 @@ class _ScanPageState extends State<ScanPage> {
   void initState(){
     super.initState();
   }
+
+  bool handled = false;
   
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,18 @@ class _ScanPageState extends State<ScanPage> {
       )
     ),
       body: MobileScanner(
-            onDetect:(result) {
+        //now only runs once and not 800 times
+            onDetect:(result) async {
+                if (handled == true) {
+                  return;
+                }
                 final id = result.barcodes.first.rawValue;
-                Navigator.push(
+                if ( id == null) {
+                  return;
+                }
+
+                handled = true;
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => EditorPage(noteId: id))
                 );
