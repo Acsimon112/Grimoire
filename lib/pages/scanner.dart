@@ -18,6 +18,7 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   bool handled = false;
+  final MobileScannerController controller = MobileScannerController();
   
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class _ScanPageState extends State<ScanPage> {
       )
     ),
       body: MobileScanner(
+            controller: controller,
         //now only runs once and not 800 times
             onDetect:(result) async {
                 if (handled == true) {
@@ -58,10 +60,17 @@ class _ScanPageState extends State<ScanPage> {
                 }
 
                 handled = true;
-                await Navigator.push(
-                  context,
+                final navigator = Navigator.of(context);
+                await controller.stop();
+                if (mounted == false) {
+                  return;
+                }
+                await navigator.push(
                   MaterialPageRoute(builder: (context) => EditorPage(noteId: id))
                 );
+
+                handled = false;
+                await controller.start();
             },
           )
         );

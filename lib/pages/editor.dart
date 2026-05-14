@@ -70,9 +70,8 @@ class _EditorPageState extends State<EditorPage> {
 
         if(user != owner){
           //used for shared docs, should make it so users cannot edit shared documents.
-          //(it does not do that)
+          //ui still appears but user is unable to make edits, can save though.
           noteController.readOnly = true;
-          //will need some additional logic to make work, just unsure how.
         }
       });
     }
